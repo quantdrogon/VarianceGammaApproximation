@@ -1,11 +1,12 @@
 #include "JuZhong.hpp"
 
 
-double JuZhongOption::findSxViaNewton(double initialGuess, double K, double r, double q, double sig, double T, double europeanPremium, double lambdaH, std::string PutCall, double maxIterNewton, double tol)
+double JuZhongOption::findSxViaNewton(double initialGuess, double K, double r, double q, double sig, double T, double europeanPremium, double deltaE, double lambdaH, std::string PutCall, double maxIterNewton, double tol)
 {
-    int counter=0;
+    
     bool flag = true;
-    while (flag == true) and (counter<maxIterNewton)
+    int counter=0;
+    while (flag == true & counter<maxIterNewton)
     {
         counter++;
         if(PutCall == "C")
@@ -23,7 +24,7 @@ double JuZhongOption::findSxViaNewton(double initialGuess, double K, double r, d
         b1 = exp(-q*T);
         b2 = exp(-r*T);
         lhs = phi*initialGuess - lambdaH*(phi*(initialGuess-K));
-        rhs = phi*initialGuess*b1*cdf(Z, phi*d1) - europeanPremium*lambdaH
+        rhs = phi*initialGuess*b1*norm_cdf(phi*d1) - europeanPremium*lambdaH;
   //Premium is the EuropeanPrice V_E
         if (abs((rhs-lhs/K)) <tol)
         {
@@ -34,8 +35,8 @@ double JuZhongOption::findSxViaNewton(double initialGuess, double K, double r, d
 
        else
        {
-        double SlopeBi = b1*pdf(Z,phi*d1) / (sig*sqrt(T)) +( 1-lambdaH) * delta;
-        double initialGuess=(lambdaH*K*phi+initialGuess*slopeBi -rhs)/(slopeBi-phi*(1-lambdaH));
+        double SlopeBi = b1*norm_pdf(phi*d1) / (sig*sqrt(T)) +( 1-lambdaH) * deltaE;
+        double initialGuess=(lambdaH*K*phi+initialGuess*SlopeBi -rhs)/(SlopeBi-phi*(1-lambdaH));
         }
     }
     return Sx;
@@ -69,7 +70,7 @@ void JuZhongOption::JuZhongPricer()
         */
     if ((phi*(Sx -S))> 0)
     {
-        AmerPrice = europeanPremium + (hTau * ah * pow((S/Sx),lambdaH))/(1 - b * (pow(log(S/Sx),2) - c * log(S/Sx));
+        AmerPrice = europeanPremium + (hTau * ah * pow((S/Sx),lambdaH))/(1 - b * (pow(log(S/Sx),2) - c * log(S/Sx)));
     }
 
     else {
@@ -77,7 +78,9 @@ void JuZhongOption::JuZhongPricer()
     
     }
 }
- double JuZhongOption::JuZhongOption(double S, double K, double r, double q, double sig, double T, double europeanPremium, double deltaE, double gammaE, double vegaE, double thetaE, std::string PutCall, int maxIterNewton, double tol): : S(S), K(K), r(r), q(q), sig(sig), T(T), europeanPremium(euroPremium), deltaE(deltaE), gammaE(gammaE), vegaE(vegaE), thetaE(thetaE), lambdaH(lambdaH), PutCall(PutCall), maxIterNewton(maxIterNewton), tol(tol);
+
+
+JuZhongOption::JuZhongOption(double S, double K, double r, double q, double sig, double T, double europeanPremium, double deltaE, double gammaE, double vegaE, double thetaE, std::string PutCall, int maxIterNewton, double tol)
 {
         alpha = 2 * r/(sig^2);
         beta = 2 * (r-q)/(pow(sig,2);
@@ -89,7 +92,7 @@ void JuZhongOption::JuZhongPricer()
         hi = (-phi*(r-q)*T - 2*sig*sqrt(T)) * K / (phi * (sInfty - K));
         initialGuess = sInfty + (K - sInfty) * exp(hi);
 
-        Sx = findSxViaJuZhong(initialGuess, K, r, q, sig, T, phi, lambdaH);
+        Sx = findSxViaNewton(initialGuess, K, r, q, sig, T, europeanPremium, lambdaH, maxIterNewton, tol);
         ah = (phi * (Sx - K) - europeanPremium)/hTau;
         //ah = (phi * (Sx - K) - BlackScholesEuropeanOption(Sx, K, r, q, sig, T, europeanPremium, lambdaH, PutCall)
         
@@ -99,8 +102,10 @@ void JuZhongOption::JuZhongPricer()
         b = (1 - hTau) * alpha * lambdaHDerivation/(2*(2 * lambdaH + beta - 1));
         c = - (1 - hTau) * alpha / (2 * lambdaH + beta - 1) * (-thetaE/(hTau * ah * r * exp(-r*T)) + 1/hTau + lambdaHDerivation/(2 * lambdaH + beta - 1));
         JuZhongPricer();
-}   
+}
+        
 double JuZhongOption::getPremium()
 {
     return AmerPrice;
 }
+
