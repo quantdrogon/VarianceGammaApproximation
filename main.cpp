@@ -10,7 +10,7 @@
 
 
 #include <iostream>
-#include "blackScholesEuropean.hpp"
+#include "BlackScholesEuropean.hpp"
 #include "whaley.hpp"
 using namespace std;
 
