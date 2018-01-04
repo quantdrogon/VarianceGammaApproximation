@@ -13,7 +13,7 @@
 
 #endif /* normal_distribution_hpp */
 
-const double PI = 3.141592653589793;
+//const double PI = 3.141592653589793;
 
 double norm_cdf(double x);
 double norm_pdf(double x);
