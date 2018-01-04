@@ -14,7 +14,7 @@
 class BlackScholesEuropeanOption{
     private:
     double premium, delta, gamma, vega, theta;
-    boost::math::normal Z;
+    //boost::math::normal Z;
     
     
     public :
