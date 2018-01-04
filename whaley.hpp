@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include "importantHeaders.h"
-#include "normal_distribution.hpp"
+
 
 class whaleyOption{
 private:
