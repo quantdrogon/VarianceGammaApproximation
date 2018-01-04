@@ -13,7 +13,9 @@
 #include <iostream>
 #include <math.h> 
 #include <cmath>
-#include <boost/math/distributions.hpp>
 #include <tuple>
+#include <vector>
+#include "normal_distribution.hpp"
+const double PI = 3.141592653589793;
 
 #endif /* importantHeaders_h */
